@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background: #fbffcf;
+        }
+            
+        #map {
+            width: 100%;
+            height: calc(100% - 120px);
+            padding: 0;
+            margin: 0;
+        }
+            
+            
+            .footer {
+                height: 30px;
+                
+            }     
+            
+            
+        </style>
+        <title>ГИСпочв "ДРУЖБА"</title>
+    </head>
+    <body>
+        
+        <div style="margin-left: 150px;line-height: 1; padding-bottom: 15px;">  <big>Геоинформационная система почвенного покрова агропредприятия Дружба
+            <a href="data.xlsx"><img src="button.png"height=50px; style="padding-top: 10px; padding-bottom: 0px; padding-left: 14px;"><a href="project soil QGIS.7z"><img src="button_qgis.png"height=50px; style="padding-top: 10px; padding-bottom: 0px; padding-left: 68px;"></a>
+            </div> 
+        <div id="map">
+        </div>
+        <div class = "footer">
+            <div style="margin-left: 415px;line-height: 1; padding-bottom: 15px;">
+            <p>Геоинформационная система разработана в ФГБОУ ВО Пермский ГАТУ на кафедре агрохимии и почвоведения</p>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/k__2.js"></script>
+        <script src="data/r_3.js"></script>
+        <script src="data/n_4.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:18, minZoom:12
+        }).fitBounds([[58.997364780964254,55.020554528272804],[59.136191177627126,55.50782956690717]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://pgsha.ru/faculties/agrohim/cathedras/soil/nir/" target="_blank">на сайт ФГБОУ ВО Пермский ГАТУ</a> &middot;');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        document.querySelector(".leaflet-popup-pane").addEventListener("load", function(event) {
+          var tagName = event.target.tagName,
+            popup = map._popup;
+          // Also check if flag is already set.
+          if (tagName === "IMG" && popup && !popup._updated) {
+            popup._updated = true; // Set flag to prevent looping.
+            popup.update();
+          }
+        }, true);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_ko_0');
+        map.getPane('pane_ko_0').style.zIndex = 400;
+        var layer_ko_0 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            pane: 'pane_ko_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 12,
+            maxZoom: 18,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_ko_0;
+        map.addLayer(layer_ko_0);
+        map.createPane('pane_kapOpenStreetMap_1');
+        map.getPane('pane_kapOpenStreetMap_1').style.zIndex = 401;
+        var layer_kapOpenStreetMap_1 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_kapOpenStreetMap_1',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 12,
+            maxZoom: 18,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_kapOpenStreetMap_1;
+        function pop_k__2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['klass_bon'] !== null ? autolinker.link(feature.properties['klass_bon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_k__2_0(feature) {
+            switch(String(feature.properties['klass_bon'])) {
+                case '1':
+                    return {
+                pane: 'pane_k__2',
+                opacity: 1,
+                color: 'rgba(82,82,82,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(138,0,30,0.8)',
+                interactive: false,
+            }
+                    break;
+                case '2':
+                    return {
+                pane: 'pane_k__2',
+                opacity: 1,
+                color: 'rgba(82,82,82,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(189,0,38,0.8)',
+                interactive: false,
+            }
+                    break;
+                case '3':
+                    return {
+                pane: 'pane_k__2',
+                opacity: 1,
+                color: 'rgba(82,82,82,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(240,59,32,0.8)',
+                interactive: false,
+            }
+                    break;
+                case '4':
+                    return {
+                pane: 'pane_k__2',
+                opacity: 1,
+                color: 'rgba(82,82,82,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,141,60,0.6)',
+                interactive: false,
+            }
+                    break;
+                case '5':
+                    return {
+                pane: 'pane_k__2',
+                opacity: 1,
+                color: 'rgba(82,82,82,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,178,76,0.8)',
+                interactive: false,
+            }
+                    break;
+                case '6':
+                    return {
+                pane: 'pane_k__2',
+                opacity: 1,
+                color: 'rgba(82,82,82,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,217,118,0.8)',
+                interactive: false,
+            }
+                    break;
+                case '7':
+                    return {
+                pane: 'pane_k__2',
+                opacity: 1,
+                color: 'rgba(82,82,82,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,1,0.8)',
+                interactive: false,
+            }
+                    break;
+                case '8':
+                    return {
+                pane: 'pane_k__2',
+                opacity: 1,
+                color: 'rgba(82,82,82,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,177,0.8)',
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_k__2');
+        map.getPane('pane_k__2').style.zIndex = 402;
+        map.getPane('pane_k__2').style['mix-blend-mode'] = 'normal';
+        var layer_k__2 = new L.geoJson(json_k__2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_k__2',
+            layerName: 'layer_k__2',
+            pane: 'pane_k__2',
+            onEachFeature: pop_k__2,
+            style: style_k__2_0,
+        });
+        bounds_group.addLayer(layer_k__2);
+        function pop_r_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GS'] !== null ? autolinker.link(feature.properties['GS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_r_3_0(feature) {
+            switch(String(feature.properties['GS'])) {
+                case 'среднесуглинистые':
+                    return {
+                pane: 'pane_r_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,152,34,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'тяжелосуглинистые':
+                    return {
+                pane: 'pane_r_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,0,30,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'глинистые':
+                    return {
+                pane: 'pane_r_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(147,51,11,1.0)',
+                interactive: false,
+            }
+                    break;
+                case 'органогенные':
+                    return {
+                pane: 'pane_r_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,237,184,1.0)',
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_r_3');
+        map.getPane('pane_r_3').style.zIndex = 403;
+        map.getPane('pane_r_3').style['mix-blend-mode'] = 'normal';
+        var layer_r_3 = new L.geoJson(json_r_3, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_r_3',
+            layerName: 'layer_r_3',
+            pane: 'pane_r_3',
+            onEachFeature: pop_r_3,
+            style: style_r_3_0,
+        });
+        bounds_group.addLayer(layer_r_3);
+        function pop_n_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Номер контура <br>в базе данных</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Индекс почвы</th>\
+                        <td>' + (feature.properties['soil'] !== null ? autolinker.link(feature.properties['soil'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Гранулометрический <br>состав</th>\
+                        <td>' + (feature.properties['GS'] !== null ? autolinker.link(feature.properties['GS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Гумус, %</th>\
+                        <td>' + (feature.properties['humus'] !== null ? autolinker.link(feature.properties['humus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">pH</th>\
+                        <td>' + (feature.properties['pH'] !== null ? autolinker.link(feature.properties['pH'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">EKO<br>м-экв/100г</th>\
+                        <td>' + (feature.properties['EKO'] !== null ? autolinker.link(feature.properties['EKO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Нг<br>м-экв/100г</th>\
+                        <td>' + (feature.properties['Hg'] !== null ? autolinker.link(feature.properties['Hg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P2O5, мг/кг</th>\
+                        <td>' + (feature.properties['P2O5'] !== null ? autolinker.link(feature.properties['P2O5'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">K2O, мг/кг</th>\
+                        <td>' + (feature.properties['K2O'] !== null ? autolinker.link(feature.properties['K2O'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Класс бонитета по <br> А.С. Фатьянову</th>\
+                        <td>' + (feature.properties['klass_bon'] !== null ? autolinker.link(feature.properties['klass_bon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_n_4_0(feature) {
+            switch(String(feature.properties['color'])) {
+                case '11':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(226,178,124,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '12':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(221,164,100,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '13':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(223,143,91,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '39':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(179,159,87,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '41':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,215,132,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '42':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(206,212,120,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '219':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(161,188,79,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '224':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(156,122,97,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '12':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(221,164,100,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '39':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(179,159,87,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '39':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(179,159,87,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '39':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(179,159,87,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '219':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(161,188,79,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '219':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(161,188,79,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '219':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(161,188,79,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '219':
+                    return {
+                pane: 'pane_n_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(161,188,79,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_n_4');
+        map.getPane('pane_n_4').style.zIndex = 404;
+        map.getPane('pane_n_4').style['mix-blend-mode'] = 'normal';
+        var layer_n_4 = new L.geoJson(json_n_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_n_4',
+            layerName: 'layer_n_4',
+            pane: 'pane_n_4',
+            onEachFeature: pop_n_4,
+            style: style_n_4_0,
+        });
+        bounds_group.addLayer(layer_n_4);
+        map.addLayer(layer_n_4);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>набор слоев</h2>';
+            };
+            title.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'nочвы<br /><table><tr><td style="text-align: center;"><img src="legend/n_4_Пд1ГЭ11411га0.png" /></td><td>Пд1ГЭ1 (141,1 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_Пд2СЛ6068га1.png" /></td><td>Пд2СЛ (606,8 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_Пд3ТЛ5849га2.png" /></td><td>Пд3ТЛ (584,9 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_Дкв1ГЭ5541га3.png" /></td><td>Дкв1ГЭ5 (54,1 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_Дгоп2ГД4238га4.png" /></td><td>Дгоп2ГД (423,8 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_ДГ3ГД2132га5.png" /></td><td>ДГ3ГД (213,2 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_Абипт1279га6.png" /></td><td>Абипт (127,9 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_ОБ9364га7.png" /></td><td>ОБ (936,4 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_Пд2ТЛ14174га8.png" /></td><td>Пд2ТЛ (1417,4 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_ДБГЭ53га9.png" /></td><td>ДБГЭ (5,3 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_ДБГЭ13859га10.png" /></td><td>ДБГЭ1 (385,9 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_ДБКГЭ1386га11.png" /></td><td>ДБКГЭ1 (38,6 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_АблГА1855га12.png" /></td><td>АблГА (185,5 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_Адк1ГА2148га13.png" /></td><td>Адк1ГА (214,8 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_АдкСА73га14.png" /></td><td>АдкСА (7,3 га)</td></tr><tr><td style="text-align: center;"><img src="legend/n_4_Ак1ГА1910га15.png" /></td><td>Ак1ГА (191,0 га)</td></tr></table>': layer_n_4,'rранулометрический состав почв<br /><table><tr><td style="text-align: center;"><img src="legend/r_3_среднесуглинистые0.png" /></td><td>среднесуглинистые</td></tr><tr><td style="text-align: center;"><img src="legend/r_3_тяжелосуглинистые1.png" /></td><td>тяжелосуглинистые</td></tr><tr><td style="text-align: center;"><img src="legend/r_3_глинистые2.png" /></td><td>глинистые</td></tr><tr><td style="text-align: center;"><img src="legend/r_3_органогенные3.png" /></td><td>органогенные</td></tr></table>': layer_r_3,'kачество почв, класс бонитета_<br /><table><tr><td style="text-align: center;"><img src="legend/k__2_I900.png" /></td><td>I, >90</td></tr><tr><td style="text-align: center;"><img src="legend/k__2_II89801.png" /></td><td>II, 89-80</td></tr><tr><td style="text-align: center;"><img src="legend/k__2_III79702.png" /></td><td>III, 79-70</td></tr><tr><td style="text-align: center;"><img src="legend/k__2_IV69603.png" /></td><td>IV, 69-60</td></tr><tr><td style="text-align: center;"><img src="legend/k__2_V59504.png" /></td><td>V, 59-50</td></tr><tr><td style="text-align: center;"><img src="legend/k__2_VI49405.png" /></td><td>VI, 49-40</td></tr><tr><td style="text-align: center;"><img src="legend/k__2_VII39306.png" /></td><td>VII, 39-30</td></tr><tr><td style="text-align: center;"><img src="legend/k__2_VIII307.png" /></td><td>VIII, <30</td></tr></table>': layer_k__2,"kapта OpenStreetMap": layer_kapOpenStreetMap_1,"koсмический снимок": layer_ko_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        resetLabels([layer_r_3,layer_n_4]);
+        map.on("zoomend", function(){
+            resetLabels([layer_r_3,layer_n_4]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_r_3,layer_n_4]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_r_3,layer_n_4]);
+        });
+        </script>
+    </body>
+</html>
